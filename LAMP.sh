@@ -1,7 +1,11 @@
 #!/bin/bash
 
+NUSER='PLACEHOLDER'
+PASS='PLACEHOLDER'
+TOOR='PLACEHOLDER'
+
 cd ~
-sudo apt install git -y
+sudo apt install git net-tools -y
 git clone https://www.github.com/hawk6242/LinuxScripts
 cd LinuxScripts
 chmod +x *.sh
@@ -30,16 +34,16 @@ cd /tmp
 mkdir TEMP
 cd TEMP
 touch SecureInstall.sql
-echo "UPDATE mysql.user SET authentication_string=PASSWORD('PASSWORD') WHERE User='root';
+echo "UPDATE mysql.user SET authentication_string=PASSWORD('$TOOR') WHERE User='root';
 DELETE FROM mysql.user WHERE User='';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';
 FLUSH PRIVILEGES;
 create database WP_database;
-create user 'USER'@'%' identified by 'PASSWORD';
-GRANT ALL PRIVILEGES ON *.* TO 'alice'@'%' WITH GRANT OPTION;
-SHOW GRANTS FOR USER;
+create user '$NUSER'@'%' identified by '$PASS';
+GRANT ALL PRIVILEGES ON *.* TO $NUSER@'%' WITH GRANT OPTION;
+SHOW GRANTS FOR '$NUSER';
 FLUSH PRIVILEGES;" > SecureInstall.sql
 sudo mysql -sfu root < "SecureInstall.sql"
 
@@ -62,3 +66,15 @@ sudo chown root:root /var/www
 sudo chown www-data:www-data -R /var/www/*
 sudo chmod -R 755 /var/www
 sudo chmod g+s /var/www/html
+
+sudo sed -i s/ServerSignature\ On/ServerSignature\ Off/ /etc/apache2/conf-enabled/security.conf
+sudo sed -i s/ServerTokens\ OS/ServerTokens\ Prod/ /etc/apache2/conf-enabled/security.conf
+sudo sed -i s/TraceEnable\ On/TraceEnable\ Off/ /etc/apache2/conf-enabled/security.conf
+sudo systemctl restart apache2
+
+cd /var/www/html/wordpress/
+sudo cp wp-config-sample.php wp-config.php
+
+sudo sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', 'WP_database' );/" /var/www/html/wordpress/wp-config.php
+sudo sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', '$NUSER' );/" /var/www/html/wordpress/wp-config.php
+sudo sed -i "s/define( 'DB_PASSWORD', 'password_here' );/define( 'DB_PASSWORD', '$PASS' );/" /var/www/html/wordpress/wp-config.php
