@@ -45,7 +45,7 @@ create user '$NUSER'@'%' identified by '$PASS';
 GRANT ALL PRIVILEGES ON *.* TO $NUSER@'%' WITH GRANT OPTION;
 SHOW GRANTS FOR '$NUSER';
 FLUSH PRIVILEGES;" > SecureInstall.sql
-sudo mysql -sfu root < "SecureInstall.sql"
+sudo mysql -sfu root < SecureInstall.sql
 
 cd /tmp/TEMP/
 wget -c http://wordpress.org/latest.tar.gz
