@@ -5,7 +5,7 @@ PASS='PLACEHOLDER'
 TOOR='PLACEHOLDER'
 
 cd ~
-sudo apt install git net-tools -y
+sudo apt install git net-tools apache2 apache2-utils php7.2 php7.2-mysql libapache2-mod-php7.2 php7.2-cli php7.2-cgi php7.2-gd htop vim mysql-client mysql-server vsftpd -y
 git clone https://www.github.com/hawk6242/LinuxScripts
 cd LinuxScripts
 chmod +x *.sh
@@ -16,7 +16,7 @@ sudo ufw allow 21
 sudo ufw allow 80
 sudo ufw allow 3306
 
-sudo apt install apache2 apache2-utils php7.2 php7.2-mysql libapache2-mod-php7.2 php7.2-cli php7.2-cgi php7.2-gd htop vim mysql-client mysql-server vsftpd -y
+#sudo apt install apache2 apache2-utils php7.2 php7.2-mysql libapache2-mod-php7.2 php7.2-cli php7.2-cgi php7.2-gd htop vim mysql-client mysql-server vsftpd -y
 sudo apt autoremove -y
 sudo systemctl enable apache2
 sudo systemctl enable vsftpd
